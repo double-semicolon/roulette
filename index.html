@@ -1,3 +1,4 @@
+どうぶつルーレット.html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -50,8 +51,8 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      /* 自然に減速するアニメーション（6秒に変更） */
-      transition: transform 6s cubic-bezier(0.1, 0.8, 0.2, 1);
+      /* 自然に減速するアニメーション（8秒） */
+      transition: transform 8s cubic-bezier(0.1, 0.8, 0.2, 1);
       transform-origin: center center;
       will-change: transform;
     }
@@ -121,68 +122,6 @@
       opacity: 0.3;
     }
 
-    /* リトライボタンのスタイル（コントロールエリアのスタイルを一部引き継ぎ） */
-    .retry-btn {
-      background-color: #ff8c00;
-      color: white;
-      border: none;
-      border-radius: 40px;
-      padding: 15px 50px;
-      font-size: 26px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 6px 0 #c26a00, 0 10px 10px rgba(0,0,0,0.2);
-      transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
-      letter-spacing: 2px;
-    }
-
-    .retry-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 0px 0 #c26a00, 0 4px 4px rgba(0,0,0,0.2);
-    }
-
-    /* 結果表示のモーダル */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-
-    /* JSでクラス付与して表示 */
-    .modal.show {
-      display: flex;
-    }
-
-    /* モーダルの中身 */
-    .modal-content {
-      background: #ffffff;
-      padding: 40px 30px;
-      border-radius: 24px;
-      text-align: center;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-width: 90%;
-      box-sizing: border-box;
-      border: 4px solid #ff8c00;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* 当たりテキスト */
-    .result-text {
-      font-size: 28px;
-      font-weight: bold;
-      color: #333;
-      margin-top: 0;
-      margin-bottom: 30px;
-    }
   </style>
 </head>
 <body>
@@ -200,13 +139,6 @@
   
   <button id="start-btn" class="secret-start-btn">🌸</button>
 
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <p id="result-text" class="result-text">〇〇があたったよ！</p>
-      <button id="retry-btn" class="retry-btn">もういちどあそぶ</button>
-    </div>
-  </div>
-
   <script>
     // ルーレットの動物リスト（時計回り順）
     // 0度の位置（真上）がライオンとして設定
@@ -223,9 +155,6 @@
 
     const startBtn = document.getElementById('start-btn');
     let rouletteBoard = document.getElementById('roulette-board');
-    const modal = document.getElementById('modal');
-    const resultText = document.getElementById('result-text');
-    const retryBtn = document.getElementById('retry-btn');
 
     // 音声ファイルの読み込み
     const spinSound = new Audio('spin.mp3');
@@ -271,7 +200,7 @@
       currentDeg += totalRotation;
       rouletteBoard.style.transform = `rotate(${currentDeg}deg)`;
 
-      // 6. アニメーション完了(6秒)後にポップアップを表示
+      // 6. アニメーション完了(6秒)後にボタンを再度押せるようにする
       setTimeout(() => {
         isSpinning = false;
 
@@ -280,15 +209,9 @@
         resultSound.currentTime = 0;
         resultSound.play();
 
-        resultText.textContent = `${animals[targetIndex]}があたったよ！`;
-        modal.classList.add('show');
-      }, 6000); // ここを6000に変更
-    });
-
-    // リトライボタンのクリックイベント
-    retryBtn.addEventListener('click', () => {
-      modal.classList.remove('show');
-      startBtn.disabled = false;
+        // ボタンを再度活性化
+        startBtn.disabled = false;
+      }, 8000);
     });
 
     // 画像読み込みエラー時のフォールバック処理
